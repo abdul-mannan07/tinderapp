@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/dob_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/lookingfor_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/name_screen.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       //home: PhoneScreen(),
       //home: NameScreen(),
       //home: LookingforScreen(),
-      home: DobScreen(),
+      // home: DobScreen(),
+      home: BottomNavScreen(),
     );
   }
 }

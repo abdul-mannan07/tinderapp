@@ -4,10 +4,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(
-        fontSize: 16,
-        color: Colors.black87,
-      ),
+      bodyMedium: TextStyle(fontSize: 16, color: Colors.black87),
     ),
   );
 
@@ -17,4 +14,13 @@ class AppTheme {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+  static const TextStyle head1 = TextStyle(
+    color: Colors.white,
+    fontSize: 35,
+
+    fontWeight: FontWeight.bold,
+    //  decorationStyle:
+  );
+
+ 
 }

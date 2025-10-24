@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tinderapp/presentation/screens/onboarding/gender_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/widgets/stepper_bar.dart';
+import 'package:tinderapp/presentation/theme/app_theme.dart';
 
 class DobScreen extends StatefulWidget {
   const DobScreen({super.key});
@@ -60,12 +61,7 @@ class _DobScreenState extends State<DobScreen> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
                   "Your b-day?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    //  decorationStyle:
-                  ),
+               style: AppTheme.head1,
                 ),
               ),
               SizedBox(

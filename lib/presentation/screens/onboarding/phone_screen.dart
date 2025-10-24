@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tinderapp/presentation/screens/onboarding/name_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/widgets/stepper_bar.dart';
+import 'package:tinderapp/presentation/theme/app_theme.dart';
 
 class PhoneScreen extends StatefulWidget {
   const PhoneScreen({super.key});
@@ -45,12 +46,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
 
                 child: Text(
                   "Can we get \n your phone number?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    //  decorationStyle:
-                  ),
+                  style: AppTheme.head1,
                 ),
               ),
               SizedBox(

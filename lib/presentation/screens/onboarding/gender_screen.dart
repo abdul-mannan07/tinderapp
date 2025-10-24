@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tinderapp/presentation/screens/onboarding/intrested_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/widgets/stepper_bar.dart';
+import 'package:tinderapp/presentation/theme/app_theme.dart';
 
 class GenderScreen extends StatefulWidget {
   const GenderScreen({super.key});
@@ -50,11 +51,7 @@ class _GenderScreenState extends State<GenderScreen> {
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: const Text(
                   "What's your gender?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                 style: AppTheme.head1,
                 ),
               ),
               const SizedBox(height: 20),

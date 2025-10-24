@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tinderapp/presentation/screens/onboarding/dob_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/widgets/stepper_bar.dart';
+import 'package:tinderapp/presentation/theme/app_theme.dart';
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
@@ -40,15 +41,7 @@ class _NameScreenState extends State<NameScreen> {
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
-                child: Text(
-                  "What's your\nfirst name?",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    //  decorationStyle:
-                  ),
-                ),
+                child: Text("What's your\nfirst name?", style: AppTheme.head1),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,

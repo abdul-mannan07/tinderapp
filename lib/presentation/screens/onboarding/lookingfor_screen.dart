@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tinderapp/presentation/screens/onboarding/lifestyle_screen.dart';
+import 'package:tinderapp/presentation/theme/app_theme.dart';
 
 class LookingforScreen extends StatefulWidget {
   const LookingforScreen({super.key});
@@ -41,11 +43,7 @@ class _LookingforScreenState extends State<LookingforScreen> {
                     children: [
                       TextSpan(
                         text: "Right now I'm\nlooking for...\n",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  style: AppTheme.head1,
                       ),
                       TextSpan(
                         text: "Increase compatibility by sharing yours!",
@@ -82,6 +80,14 @@ class _LookingforScreenState extends State<LookingforScreen> {
                     return GestureDetector(
                       onTap: () {
                         print("object");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                           return   LifestyleScreen();
+                            },
+                          ),
+                        );
                       },
                       child: Card(
                         child: Padding(

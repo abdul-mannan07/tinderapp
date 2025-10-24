@@ -66,7 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     imageAssets: "assets/images/person.png",
                     text: "Create new account",
                     onTapCon: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PhoneScreen()),
+                      );
                     },
                   ),
                 ),

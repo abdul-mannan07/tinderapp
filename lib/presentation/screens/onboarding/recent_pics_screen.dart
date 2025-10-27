@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
 import 'package:tinderapp/presentation/theme/app_theme.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -11,6 +15,52 @@ class RecentPicsScreen extends StatefulWidget {
 }
 
 class _RecentPicsScreenState extends State<RecentPicsScreen> {
+  List<File> _images = [];
+  final picker = ImagePicker();
+
+  Future<bool> requestPermission(Permission permission) async {
+    if (await permission.isGranted) return true;
+    final status = await permission.request();
+    return status == PermissionStatus.granted;
+  }
+
+  Future getImage(ImageSource source) async {
+    bool permissionGranted = false;
+
+    if (source == ImageSource.camera) {
+      permissionGranted = await requestPermission(Permission.camera);
+    } else if (source == ImageSource.gallery) {
+      permissionGranted = Platform.isIOS
+          ? await requestPermission(Permission.photos)
+          : await requestPermission(Permission.storage);
+    }
+
+    if (!permissionGranted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Permission denied")));
+      return;
+    }
+
+    final pickerImage = await picker.pickImage(source: source);
+
+    setState(() {
+      if (pickerImage != null) {
+        if (_images.length < 6) {
+          _images.add(File(pickerImage.path));
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Maximum 6 images allowed")));
+        }
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Pick image")));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,6 +85,9 @@ class _RecentPicsScreenState extends State<RecentPicsScreen> {
                     crossAxisSpacing: 12,
                   ),
                   itemBuilder: (context, index) {
+                    File? imageFile = index < _images.length
+                        ? _images[index]
+                        : null;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
@@ -55,10 +108,12 @@ class _RecentPicsScreenState extends State<RecentPicsScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.8,
                                   // child: Container(color: Colors.amber),
-                                  child: Image.asset(
-                                    "assets/images/google.png",
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: imageFile != null
+                                      ? Image.file(imageFile, fit: BoxFit.cover)
+                                      : Image.asset(
+                                          "assets/images/google.png",
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
                               ),
                             ),
@@ -67,7 +122,11 @@ class _RecentPicsScreenState extends State<RecentPicsScreen> {
                               bottom: 1,
                               right: 1,
                               child: GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  getImage(ImageSource.gallery);
+                                  print("object");
+                                  
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: const Color(

@@ -104,12 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.settings_sharp, size: 30),
           ),
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () {
-                  showBorder();
-                },
-                style: buttonFlag == true
+                onPressed: showBorder,
+                style: buttonFlag
                     ? ElevatedButton.styleFrom(
                         side: BorderSide(width: 2, color: Colors.black),
                       )
@@ -120,25 +119,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   "For You",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 15,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
+                  overflow: TextOverflow.ellipsis, // optional
                 ),
               ),
-              SizedBox(width: 10),
+
+              SizedBox(width: 3),
               ElevatedButton(
                 onPressed: () {},
                 child: Text(
                   "Double Date",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 15,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
+                  // overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
+
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -316,17 +319,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: refreshFlag == true
                                   ? CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
+                                      radius: 30,
                                       child: Icon(
                                         Icons.refresh,
-                                        size: 35,
+                                        size: 30,
                                         color: Colors.pink,
                                       ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.white,
                                       radius: 25,
-                                      child: Icon(Icons.refresh, size: 30),
+                                      child: Icon(Icons.refresh, size: 25),
                                     ),
                             ),
                             IconButton(
@@ -336,18 +339,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: closeFlag == true
                                   ? CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
+                                      radius: 30,
                                       child: Icon(
                                         Icons.close_outlined,
-                                        size: 35,
+                                        size: 30,
 
                                         color: Colors.pink,
                                       ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
-                                      child: Icon(Icons.close, size: 35),
+                                      radius: 30,
+                                      child: Icon(Icons.close, size: 30),
                                     ),
                             ),
                             IconButton(
@@ -357,17 +360,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: starFlag == true
                                   ? CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
+                                      radius: 30,
                                       child: Icon(
                                         Icons.star,
-                                        size: 35,
+                                        size: 30,
                                         color: Colors.pink,
                                       ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.white,
                                       radius: 25,
-                                      child: Icon(Icons.star, size: 30),
+                                      child: Icon(Icons.star, size: 25),
                                     ),
                             ),
                             IconButton(
@@ -377,17 +380,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: favFlag == true
                                   ? CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
+                                      radius: 30,
                                       child: Icon(
                                         Icons.favorite,
-                                        size: 35,
+                                        size: 30,
                                         color: Colors.pink,
                                       ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
-                                      child: Icon(Icons.favorite, size: 35),
+                                      radius: 30,
+                                      child: Icon(Icons.favorite, size: 30),
                                     ),
                             ),
                             IconButton(
@@ -397,17 +400,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: sentFlag == true
                                   ? CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 35,
+                                      radius: 30,
                                       child: Icon(
                                         Icons.send_rounded,
-                                        size: 35,
+                                        size: 30,
                                         color: Colors.pink,
                                       ),
                                     )
                                   : CircleAvatar(
                                       backgroundColor: Colors.white,
                                       radius: 25,
-                                      child: Icon(Icons.send_rounded, size: 30),
+                                      child: Icon(Icons.send_rounded, size: 25),
                                     ),
                             ),
                           ],

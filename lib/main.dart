@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       //home: NameScreen(),
       //home: LookingforScreen(),
       // home: DobScreen(),
-      // home: BottomNavScreen(),
-     // home: RecentPicsScreen(),
-      home: LikesScreen(),
+      home: BottomNavScreen(),
+      //home: RecentPicsScreen(),
+      //  home: LikesScreen(),
     );
   }
 }

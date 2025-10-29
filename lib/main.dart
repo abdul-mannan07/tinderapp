@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/likes_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/dob_screen.dart';
@@ -8,9 +9,16 @@ import 'package:tinderapp/presentation/screens/onboarding/phone_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/recent_pics_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/splash_screen.dart';
 import 'package:tinderapp/presentation/theme/app_theme.dart';
+import 'provider/image_slider_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_)=>ImageSliderProvider())
+    ],
+      child:  const MyApp()),
+  
+   );
 }
 
 class MyApp extends StatelessWidget {

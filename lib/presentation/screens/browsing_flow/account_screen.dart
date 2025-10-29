@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tinderapp/provider/image_slider_provider.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -13,14 +15,32 @@ class _AccountScreenState extends State<AccountScreen> {
     Icon(Icons.flash_on, color: Colors.purple),
     Icon(Icons.local_fire_department, color: Colors.pink),
   ];
-  List<String> imagesAddress = [
-    "assets/search/youngwoman1.jpg",
-    "assets/search/girls.png",
-    "assets/search/top.png",
-  ];
-  int currentIndex = 0;
+  // List<String> imagesAddress = [
+  //   "assets/search/youngwoman2.jpg",
+  //   "assets/search/girls.png",
+  //   "assets/search/top.png",
+  // ];
+  // int currentIndex = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPersistentFrameCallback((_) {
+      final provider = Provider.of<ImageSliderProvider>(context, listen: false);
+      provider.startAutoSlide();
+    });
+  }
+
+  @override
+  void dispose() {
+    final provider = Provider.of<ImageSliderProvider>(context, listen: false);
+    provider.stopAutoSlide();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //final provider = Provider.of<ImageSliderProvider>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -195,37 +215,81 @@ class _AccountScreenState extends State<AccountScreen> {
                 },
               ),
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 300,
-                width: MediaQuery.of(context).size.width * 0.95,
-                child: Image.asset(
-                  imagesAddress[currentIndex],
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox(height: 5),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(imagesAddress.length, (index) {
-                  return Container(
-                    width: 7,
-                    height: 7,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 2,
-                    ), // spacing between parts
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey,
+            Consumer<ImageSliderProvider>(
+              builder: (context, provider, child) {
+                final images = provider.imagesAddress;
+                final currentIndex = provider.currentIndex;
+
+                return Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: AnimatedSwitcher(
+                        duration: Duration(seconds: 1),
+                        child: Container(
+                          key: ValueKey<String>(images[currentIndex]),
+                          height: 300,
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          child: Image.asset(
+                            images[currentIndex],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                }),
-              ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(images.length, (index) {
+                        bool isActive = index == currentIndex;
+                        return AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          width: isActive ? 10 : 7,
+                          height: isActive ? 10 : 7,
+                          margin: EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isActive ? Colors.pink : Colors.grey,
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                );
+              },
             ),
+
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(10),
+            //   child: Container(
+            //     height: 300,
+            //     width: MediaQuery.of(context).size.width * 0.95,
+            //     child: Image.asset(
+            //       imagesAddress[currentIndex],
+            //       fit: BoxFit.cover,
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 5),
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(20),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: List.generate(imagesAddress.length, (index) {
+            //       return Container(
+            //         width: 7,
+            //         height: 7,
+            //         margin: EdgeInsets.symmetric(
+            //           horizontal: 2,
+            //         ), // spacing between parts
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(20),
+            //           color: Colors.grey,
+            //         ),
+            //       );
+            //     }),
+            //   ),
+            // ),
           ],
         ),
       ),

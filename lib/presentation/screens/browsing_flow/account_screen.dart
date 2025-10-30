@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tinderapp/presentation/screens/browsing_flow/setting_screen.dart';
 import 'package:tinderapp/provider/image_slider_provider.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -15,12 +16,6 @@ class _AccountScreenState extends State<AccountScreen> {
     Icon(Icons.flash_on, color: Colors.purple),
     Icon(Icons.local_fire_department, color: Colors.pink),
   ];
-  // List<String> imagesAddress = [
-  //   "assets/search/youngwoman2.jpg",
-  //   "assets/search/girls.png",
-  //   "assets/search/top.png",
-  // ];
-  // int currentIndex = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -76,7 +71,16 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SettingScreen();
+                          },
+                        ),
+                      );
+                    },
                     icon: Icon(
                       Icons.settings,
                       color: Colors.grey.shade600,
@@ -258,38 +262,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               },
             ),
-
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(10),
-            //   child: Container(
-            //     height: 300,
-            //     width: MediaQuery.of(context).size.width * 0.95,
-            //     child: Image.asset(
-            //       imagesAddress[currentIndex],
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(height: 5),
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(20),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: List.generate(imagesAddress.length, (index) {
-            //       return Container(
-            //         width: 7,
-            //         height: 7,
-            //         margin: EdgeInsets.symmetric(
-            //           horizontal: 2,
-            //         ), // spacing between parts
-            //         decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(20),
-            //           color: Colors.grey,
-            //         ),
-            //       );
-            //     }),
-            //   ),
-            // ),
           ],
         ),
       ),

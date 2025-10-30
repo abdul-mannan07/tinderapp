@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
-import 'package:tinderapp/presentation/screens/browsing_flow/home_screen.dart';
 
 class HomeArrowScreen extends StatefulWidget {
   const HomeArrowScreen({super.key});

@@ -18,7 +18,7 @@ class _SettingScreenState extends State<SettingScreen> {
   double startAge = 18;
   double endAge = 75;
   RangeValues _currentRangeValues = const RangeValues(18, 75);
-
+  String version = "Version 14.6.0 (Build 3410)";
   Language _selectedLanguageObj = Languages.english;
 
   String selectedLanguage = "English";
@@ -153,18 +153,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Account Setting",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                  SizedBox(height: 10),
+                  BrowsingClasses().textHeadAlign("Account Setting"),
                   const SizedBox(height: 10),
                   Container(
                     height: 50,
@@ -185,32 +175,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     ),
                   ),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Verify a Phone Number to help Secure your account",
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+                  BrowsingClasses().textAlign(
+                    "Verify a Phone Number to help Secure your account",
                   ),
                   const SizedBox(height: 10),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Discovery Settings",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                  BrowsingClasses().textHeadAlign("Discovery Settings"),
                   const SizedBox(height: 10),
                   Container(
                     height: 70,
@@ -295,6 +264,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       padding: EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Preffered Language",
@@ -371,7 +341,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Align(
+                              Align(
                                 alignment: Alignment.topLeft,
                                 child: Text(
                                   "Maximum Distance",
@@ -492,7 +462,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   SizedBox(height: 20),
                   Container(
-                    height: 200,
+                    height: 160,
                     decoration: BrowsingClasses().myBoxDecoration,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -557,6 +527,59 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     ),
                   ),
+                  BrowsingClasses().textAlign(
+                    "Your Prefrences help inform who you see on Tinder, prioritizing people who fit what's essential to you. You may still see people outside of your preferences, so you have options.",
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    decoration: BrowsingClasses().myBoxDecoration,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                      ),
+                      onPressed: () {},
+                      child: Text("Logout"),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.local_fire_department,
+                          color: Colors.pink,
+                          size: 70,
+                        ),
+                        Text(
+                          version,
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Powered by Tinder Inc.",
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    decoration: BrowsingClasses().myBoxDecoration,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                      ),
+                      onPressed: () {},
+                      child: Text("Delete Account"),
+                    ),
+                  ),
+                  SizedBox(height: 40),
                 ],
               ),
             ),

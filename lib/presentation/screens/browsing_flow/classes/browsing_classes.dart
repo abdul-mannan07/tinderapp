@@ -12,39 +12,56 @@ class BrowsingClasses {
   );
 
   Widget textAlign(String textExplain) {
-  return Align(
-    alignment: Alignment.topLeft,
-    child: Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text(
-        textExplain,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          textExplain,
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
+
+  Widget textHeadAlign(String textHead) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child:  Text(
+          textHead,
+          style: const TextStyle(
+           fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+          ),
+        ),
+  
+    );
+  }
+
+
+
+
+
+  // Parallelogram clipper and firstWidget
+  Widget firstWidget(Color iconColor, Color textColor) {
+    return ClipPath(
+      clipper: ParallelogramClipper(),
+      child: Container(
+        color: iconColor,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: Text(
+          "Premium",
+          style: TextStyle(color: textColor, fontSize: 10),
+        ),
+      ),
+    );
+  }
 }
-
-
-
-// Parallelogram clipper and firstWidget
-Widget firstWidget(Color iconColor, Color textColor) {
-  return ClipPath(
-    clipper: ParallelogramClipper(),
-    child: Container(
-      color: iconColor,
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: Text("Premium", style: TextStyle(color: textColor, fontSize: 10)),
-    ),
-  );
-}
-
-}
-
-
 
 class LocationPromptWidget extends StatefulWidget {
   final Function(String) onLocationSelected;
@@ -59,53 +76,57 @@ class _LocationPromptWidgetState extends State<LocationPromptWidget> {
   bool _isLoading = false;
 
   Future<void> _getLocation() async {
-    final localContext = context;
-
-    setState(() => _isLoading = true); // 🟢 Start loading indicator
+    if (!mounted) return; // ✅ Guard before doing anything
+    setState(() => _isLoading = true);
 
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!mounted) return;
+
       if (!serviceEnabled) {
-        if (!mounted) return;
         widget.onLocationSelected('Unknown');
 
-        if (!localContext.mounted) return;
-        await Geolocator.openLocationSettings();
+        if (mounted && ScaffoldMessenger.maybeOf(context) != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location services are disabled.')),
+          );
+        }
 
-        if (!localContext.mounted) return;
-        ScaffoldMessenger.of(localContext).showSnackBar(
-          const SnackBar(content: Text('Location services are disabled.')),
-        );
+        await Geolocator.openLocationSettings();
         return;
       }
 
       LocationPermission permission = await Geolocator.checkPermission();
+      if (!mounted) return;
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
+        if (!mounted) return;
+
         if (permission == LocationPermission.denied) {
-          if (!mounted) return;
           widget.onLocationSelected('Unknown');
 
-          if (!localContext.mounted) return;
-          ScaffoldMessenger.of(localContext).showSnackBar(
-            const SnackBar(content: Text('Location permission denied')),
-          );
+          if (mounted && ScaffoldMessenger.maybeOf(context) != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permission denied')),
+            );
+          }
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        if (!mounted) return;
         widget.onLocationSelected('Unknown');
 
-        if (!localContext.mounted) return;
-        ScaffoldMessenger.of(localContext).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Location permissions are permanently denied. Please enable them in settings.',
+        if (mounted && ScaffoldMessenger.maybeOf(context) != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Location permissions are permanently denied. Please enable them in settings.',
+              ),
             ),
-          ),
-        );
+          );
+        }
         return;
       }
 
@@ -114,27 +135,29 @@ class _LocationPromptWidgetState extends State<LocationPromptWidget> {
         distanceFilter: 0,
       );
 
-      Position position = await Geolocator.getCurrentPosition(
+      final position = await Geolocator.getCurrentPosition(
         locationSettings: locationSettings,
       );
+      if (!mounted) return;
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
+      final placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
-
-      String city = placemarks.first.locality ?? 'Unknown city';
-      String country = placemarks.first.country ?? 'Unknown country';
-
       if (!mounted) return;
+
+      final city = placemarks.first.locality ?? 'Unknown city';
+      final country = placemarks.first.country ?? 'Unknown country';
+
       widget.onLocationSelected('$city, $country');
     } catch (e) {
-      if (!localContext.mounted) return;
-      ScaffoldMessenger.of(
-        localContext,
-      ).showSnackBar(SnackBar(content: Text('Error getting location: $e')));
+      if (mounted && ScaffoldMessenger.maybeOf(context) != null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error getting location: $e')));
+      }
     } finally {
-      if (mounted) setState(() => _isLoading = false); // 🔴 Stop loading
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -175,9 +198,6 @@ class _LocationPromptWidgetState extends State<LocationPromptWidget> {
   }
 }
 
-
-
-
 class ParallelogramClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
@@ -200,6 +220,7 @@ class PlaceholderMemberShip extends StatelessWidget {
   final String textDesc;
   final Widget? pallalogramBox;
   final Color iconColor;
+
   const PlaceholderMemberShip({
     super.key,
     this.pallalogramBox,

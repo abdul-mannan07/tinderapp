@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
 import 'package:tinderapp/presentation/theme/app_theme.dart';
-import 'provider/image_slider_provider.dart';
+import 'package:tinderapp/presentation/screens/provider/home_arrow_provider.dart';
+import 'package:tinderapp/presentation/screens/provider/home_provider.dart';
+import 'presentation/screens/provider/image_slider_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ImageSliderProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ImageSliderProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeArrowProvider()),
+      ],
       child: const MyApp(),
     ),
   );

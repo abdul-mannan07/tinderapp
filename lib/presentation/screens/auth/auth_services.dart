@@ -1,49 +1,59 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+class AuthException implements Exception {
+  final String message;
+  AuthException(this.message);
+  
+  @override
+  String toString() => message;
+}
+
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Mobile GoogleSignIn singleton
+  // Singleton GoogleSignIn instance
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   Future<User?> signInWithGoogle() async {
     try {
-      // Initialize GoogleSignIn with your server client ID
+      // IMPORTANT: Initialize before authenticate
       await _googleSignIn.initialize(
-        serverClientId:
-            "292387979165‑mcm23gb2v7hu0bgdn94vaieo9rerd8nl.apps.googleusercontent.com",
+        clientId:
+            "292387979165-mcm23gb2v7hu0bgdn94vaieo9rerd8nl.apps.googleusercontent.com",
       );
 
-      // Prompt user to select a Google account
-      final GoogleSignInAccount? googleUser = await _googleSignIn.authenticate(
-        scopeHint: ['email', 'profile'],
+      final GoogleSignInAccount account = await _googleSignIn.authenticate(
+        scopeHint: ['email'],
       );
 
-      if (googleUser == null) {
-        print('Google Sign-In canceled by user');
-        return null;
-      }
+      final GoogleSignInAuthentication auth = await account.authentication;
 
-      final googleAuth = await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-        // accessToken: googleAuth.accessToken,
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: auth.idToken,
+        //accessToken: auth.accessToken,
       );
 
-      final userCredential = await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+
       return userCredential.user;
-    } catch (e, s) {
-      print('Google Sign-In error: $e');
-      print(s);
-      return null;
+    } catch (e) {
+      // TODO: Implement proper error logging
+      print("Google Sign-In Error: $e");
+      throw AuthException('Failed to sign in with Google: $e');
     }
   }
 
+  // Logout
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    await _auth.signOut();
+    try {
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+    } catch (e) {
+      print("Sign-Out Error: $e");
+    }
   }
 }
 

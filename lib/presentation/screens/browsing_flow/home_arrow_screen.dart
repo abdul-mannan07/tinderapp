@@ -66,16 +66,18 @@ class _HomeArrowScreenState extends State<HomeArrowScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // 🔹 Return updated flags to HomeScreen when popping
-        Navigator.pop(context, {
-          'star': starFlag,
-          'fav': favFlag,
-          'close': closeFlag,
-        });
-        return false;
+    return PopScope(
+      canPop: false, // we’ll handle the pop manually
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.pop(context, {
+            'star': starFlag,
+            'fav': favFlag,
+            'close': closeFlag,
+          });
+        }
       },
       child: SafeArea(
         child: Scaffold(
@@ -84,7 +86,7 @@ class _HomeArrowScreenState extends State<HomeArrowScreen> {
             title: Text(
               widget.name,
               style: const TextStyle(
-                fontSize: 35,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.pink,
               ),
@@ -173,7 +175,6 @@ class _HomeArrowScreenState extends State<HomeArrowScreen> {
                   ),
                 ),
               ),
-              // 🔹 Bottom Buttons
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(

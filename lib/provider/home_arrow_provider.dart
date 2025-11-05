@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class HomeArrowProvider with ChangeNotifier {
   // Track current picture index per profile
-  Map<int, int> _currentIndexes = {};
+  final Map<int, int> _currentIndexes = {};
 
   // Track icon flags per profile
-  Map<int, Map<String, bool>> _profileFlags = {};
+  final Map<int, Map<String, bool>> _profileFlags = {};
 
   /// Get current index for a profile
   int currentIndex(int profileIndex) => _currentIndexes[profileIndex] ?? 0;

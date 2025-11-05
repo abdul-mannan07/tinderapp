@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/home_arrow_screen.dart';
-import 'package:tinderapp/presentation/screens/provider/home_provider.dart';
 import 'package:tinderapp/presentation/screens/models/model_class.dart';
+import 'package:tinderapp/provider/home_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<HomeProvider>(context);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
 
     return SafeArea(
       child: Scaffold(

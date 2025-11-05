@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/setting_screen.dart';
-import 'package:tinderapp/presentation/screens/provider/image_slider_provider.dart';
+import 'package:tinderapp/provider/image_slider_provider.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});

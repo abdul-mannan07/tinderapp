@@ -124,7 +124,7 @@ class _RecentPicsScreenState extends State<RecentPicsScreen> {
                               child: GestureDetector(
                                 onTap: () {
                                   getImage(ImageSource.gallery);
-                                  print("object");
+                            //      print("object");
                                   
                                 },
                                 child: Container(

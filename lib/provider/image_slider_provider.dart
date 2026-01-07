@@ -1,36 +1,48 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class ImageSliderProvider with ChangeNotifier {
-  final List<String> imagesAddress = [
-    "assets/search/youngwoman2.jpg",
-    "assets/search/girls.png",
-    "assets/search/top.png",
+class ImageSliderProvider extends ChangeNotifier {
+  List<String> imagesAddress = [
+    'assets/search/club.png',
+    'assets/search/clubdj.png',
+    'assets/search/girls.png',
+    'assets/search/youngwoman1.jpg',
+    'assets/search/youngwoman2.jpg',
   ];
 
-  int _currentIndex = 0;
+  int currentIndex = 0;
   Timer? _timer;
 
-  int get currentIndex => _currentIndex;
-
-  /// Start the auto-changing timer
+  // Start auto slide
   void startAutoSlide() {
-    // Prevent multiple timers
-    _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _timer?.cancel(); // cancel previous timer
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       nextImage();
     });
   }
 
-  /// Go to next image
+  // Stop auto slide
+  void stopAutoSlide() {
+    _timer?.cancel();
+  }
+
+  // Go to next image
   void nextImage() {
-    _currentIndex = (_currentIndex + 1) % imagesAddress.length;
+    currentIndex = (currentIndex + 1) % imagesAddress.length;
     notifyListeners();
   }
 
-  /// Stop the timer (important to avoid memory leaks)
-  void stopAutoSlide() {
-    _timer?.cancel();
+  // Go to previous image
+  void previousImage() {
+    currentIndex =
+        (currentIndex - 1 + imagesAddress.length) % imagesAddress.length;
+    notifyListeners();
+  }
+
+  // Go to specific index
+  void goToIndex(int index) {
+    currentIndex = index;
+    notifyListeners();
   }
 
   @override

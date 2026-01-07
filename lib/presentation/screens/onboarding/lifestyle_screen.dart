@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/onboarding/hobbies_screen.dart';
+import 'package:tinderapp/presentation/screens/onboarding/widgets/stepper_bar.dart';
 import 'package:tinderapp/presentation/theme/app_theme.dart';
+import 'package:tinderapp/provider/name_screen_provider.dart';
 
 class LifestyleScreen extends StatefulWidget {
   const LifestyleScreen({super.key});
@@ -10,12 +13,6 @@ class LifestyleScreen extends StatefulWidget {
 }
 
 class _LifestyleScreenState extends State<LifestyleScreen> {
-  String? selectedDrink;
-  String? selectedSmoke;
-  String? selectedWorkout;
-  String? selectedPet;
-
-  //bool isSelected = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -24,9 +21,10 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
           width: double.infinity,
           color: Colors.black,
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+                StepProgressBar(
+                currentStep: 12, totalSteps: 20,
+                ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.95,
                 child: Text.rich(
@@ -36,8 +34,8 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                         text: "Let's talk lifestyle\nhabits, Judy\n",
                         style: AppTheme.head1,
                       ),
-                      TextSpan(
-                        text: "Do their habits match yours? you go first.",
+                      const TextSpan(
+                        text: "Do their habits match yours? You go first.",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -47,109 +45,112 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                     ],
                   ),
                 ),
-                // child: Text(
-                //   "Right now I'm\nlooking for...",
-                //   style: TextStyle(
-                //     color: Colors.white,
-                //     fontSize: 30,
-                //     fontWeight: FontWeight.bold,
-                //     //  decorationStyle:
-                //   ),
-                // ),
               ),
-              SizedBox(height: 30),
-              Divider(height: 5, color: Colors.white),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
+              const Divider(height: 5, color: Colors.white),
+              const SizedBox(height: 30),
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   children: [
-                    SingleChoice(
-                      icon: Icons.wine_bar,
-                      question: "How often do you drink?",
-                      options: [
-                        "Not for me",
-                        "Sober",
-                        "Sober curious",
-                        "On special occasions",
-                        "Socially on weekends",
-                        "Most Nights",
-                      ],
-                      selected: selectedDrink,
-                      onSelectedOpt: (val) => setState(() {
-                        selectedDrink = val;
-                      }),
+                    Consumer<NameProvider>(
+                      builder: (context, provider, _) => SingleChoice(
+                        icon: Icons.wine_bar,
+                        question: "How often do you drink?",
+                        options: [
+                          "Not for me",
+                          "Sober",
+                          "Sober curious",
+                          "On special occasions",
+                          "Socially on weekends",
+                          "Most Nights",
+                        ],
+                        selected: provider.selectedDrink,
+                        onSelectedOpt: provider.setDrink,
+                      ),
                     ),
-                    SizedBox(height: 30),
-                    Divider(height: 5, color: Colors.white),
-                    SizedBox(height: 30),
-                    SingleChoice(
-                      icon: Icons.smoking_rooms,
-                      question: "How often do you smoke?",
-                      options: [
-                        "Social smoker",
-                        "Smoker when drinking",
-                        "Non-smoker",
-                        "Smoker",
-                        "Trying to quit",
-                      ],
-                      selected: selectedSmoke,
-                      onSelectedOpt: (val) =>
-                          setState(() => selectedSmoke = val),
+                    const SizedBox(height: 30),
+                    const Divider(height: 5, color: Colors.white),
+                    const SizedBox(height: 30),
+                    Consumer<NameProvider>(
+                      builder: (context, provider, _) => SingleChoice(
+                        icon: Icons.smoking_rooms,
+                        question: "How often do you smoke?",
+                        options: [
+                          "Social smoker",
+                          "Smoker when drinking",
+                          "Non-smoker",
+                          "Smoker",
+                          "Trying to quit",
+                        ],
+                        selected: provider.selectedSmoke,
+                        onSelectedOpt: provider.setSmoke,
+                      ),
                     ),
-                    SizedBox(height: 30),
-                    Divider(height: 5, color: Colors.white),
-                    SizedBox(height: 30),
-                    SingleChoice(
-                      icon: Icons.fitness_center,
-                      question: "Do you workout?",
-                      options: ["Everyday", "Often", "Sometimes", "Never"],
-                      selected: selectedWorkout,
-                      onSelectedOpt: (val) =>
-                          setState(() => selectedWorkout = val),
+                    const SizedBox(height: 30),
+                    const Divider(height: 5, color: Colors.white),
+                    const SizedBox(height: 30),
+                    Consumer<NameProvider>(
+                      builder: (context, provider, _) => SingleChoice(
+                        icon: Icons.fitness_center,
+                        question: "Do you workout?",
+                        options: ["Everyday", "Often", "Sometimes", "Never"],
+                        selected: provider.selectedWorkout,
+                        onSelectedOpt: provider.setWorkout,
+                      ),
                     ),
-                    SizedBox(height: 30),
-                    Divider(height: 5, color: Colors.white),
-                    SizedBox(height: 30),
-                    SingleChoice(
-                      icon: Icons.pets,
-                      question: "Do you have any pet?",
-                      options: ["Dog", "Cat", "Reptile", "Amphibian", "Bird"],
-                      selected: selectedPet,
-                      onSelectedOpt: (val) => setState(() => selectedPet = val),
-                    ), //  width: MediaQuery.of(context).size.width * 0.65,
-                    // child: Row(
-                    //   children: [
-                    //     Icon(Icons.wine_bar, color: Colors.white),
-                    //     // Spacer(),
-                    //     Text(
-                    //       "How often do you drink?",
-                    //       style: TextStyle(color: Colors.white),
-                    //     ),
-                    //   ],
-                    // ),
+                    const SizedBox(height: 30),
+                    const Divider(height: 5, color: Colors.white),
+                    const SizedBox(height: 30),
+                    Consumer<NameProvider>(
+                      builder: (context, provider, _) => SingleChoice(
+                        icon: Icons.pets,
+                        question: "Do you have any pet?",
+                        options: ["Dog", "Cat", "Reptile", "Amphibian", "Bird"],
+                        selected: provider.selectedPet,
+                        onSelectedOpt: provider.setPet,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: MediaQuery.of(context).size.height * 0.06,
-                //decoration: BoxDecoration(color: Colors.grey),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  onPressed: () {
-                    // print("object");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HobbiesScreen()),
-                    );
-                  },
-                  child: Text(
-                    "Next",
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 96, 99, 100),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Consumer<NameProvider>(
+                  builder: (context, provider, _) => SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: provider.isNextEnabled
+                            ? Colors.pink
+                            : Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: provider.isNextEnabled
+                          ? () {
+                              print(provider.selectedDrink);
+                              print(provider.selectedPet);
+                              print(provider.selectedSmoke);
+                              print(provider.selectedWorkout);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const HobbiesScreen(),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: const Text(
+                        "Next",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -168,6 +169,7 @@ class SingleChoice extends StatelessWidget {
   final List<String> options;
   final String? selected;
   final Function(String) onSelectedOpt;
+
   const SingleChoice({
     super.key,
     required this.icon,
@@ -184,7 +186,7 @@ class SingleChoice extends StatelessWidget {
         Row(
           children: [
             Icon(icon, color: Colors.white),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               question,
               style: const TextStyle(
@@ -195,6 +197,7 @@ class SingleChoice extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,

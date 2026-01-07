@@ -1,9 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:language_picker/language_picker.dart';
 import 'package:language_picker/languages.dart';
+import 'package:provider/provider.dart';
+import 'package:tinderapp/auth/auth_services.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/classes/browsing_classes.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/settings_language_screen.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/show_me_screen.dart';
+import 'package:tinderapp/presentation/screens/onboarding/signup_screen.dart';
+import 'package:tinderapp/provider/auth_provider.dart';
+import 'package:tinderapp/provider/name_screen_provider.dart';
+import 'package:tinderapp/utils/signup_utils.dart';
 
 class SettingScreen extends StatefulWidget {
   final String? selectedText;
@@ -531,19 +539,46 @@ class _SettingScreenState extends State<SettingScreen> {
                     "Your Prefrences help inform who you see on Tinder, prioritizing people who fit what's essential to you. You may still see people outside of your preferences, so you have options.",
                   ),
                   SizedBox(height: 20),
-                  Container(
-                    decoration: BrowsingClasses().myBoxDecoration,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                      ),
-                      onPressed: () {},
-                      child: Text("Logout"),
-                    ),
+                  Consumer<NameProvider>(
+                    builder: (context, provider, child) {
+                      return Container(
+                        decoration: BrowsingClasses().myBoxDecoration,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            elevation: 0,
+                          ),
+                          onPressed: () async {
+                            try {
+                              await provider.signOut(); // wait for sign-out
+
+                              if (!mounted) return; // check before navigation
+
+                              // Delay navigation to next frame to be extra safe
+                              Future.microtask(() {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (_) => const SignUpScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              });
+                            } catch (e) {
+                              if (!mounted) return;
+                              SignupUtils.showToast(
+                                "Logout failed: $e",
+                                backgroundColor: Colors.red,
+                              );
+                            }
+                          },
+                          child: Text("Logout"),
+                        ),
+                      );
+                    },
                   ),
+
                   SizedBox(height: 20),
                   SizedBox(
                     child: Column(

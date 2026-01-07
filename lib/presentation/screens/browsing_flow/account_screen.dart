@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tinderapp/presentation/screens/browsing_flow/setting_screen.dart';
+import 'package:tinderapp/presentation/screens/browsing_flow/editprofile_screen.dart';
+import 'package:tinderapp/provider/account_provider.dart';
 import 'package:tinderapp/provider/image_slider_provider.dart';
+import 'package:tinderapp/presentation/screens/browsing_flow/setting_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -11,37 +13,36 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  String? profileName;
   List<Widget> icons = [
     Icon(Icons.star, color: Colors.blueAccent),
     Icon(Icons.flash_on, color: Colors.purple),
     Icon(Icons.local_fire_department, color: Colors.pink),
   ];
+
+  List<String> accText = ["Super Likes", "My Boosts", "Subscription"];
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      final provider = Provider.of<ImageSliderProvider>(context, listen: false);
-      provider.startAutoSlide();
+
+    // Start the image slider after the widget tree is built
+    Future.microtask(() {
+      // Start the auto-slide
+      Provider.of<ImageSliderProvider>(context, listen: false).startAutoSlide();
+
+      // Load account data
+      Provider.of<AccountProvider>(context, listen: false).loadAccountData();
     });
   }
 
   @override
-  void dispose() {
-    final provider = Provider.of<ImageSliderProvider>(context, listen: false);
-    provider.stopAutoSlide();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    //final provider = Provider.of<ImageSliderProvider>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           elevation: 4,
           titleSpacing: 5,
-          // centerTitle: true,
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -74,11 +75,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return SettingScreen();
-                          },
-                        ),
+                        MaterialPageRoute(builder: (_) => SettingScreen()),
                       );
                     },
                     icon: Icon(
@@ -93,13 +90,22 @@ class _AccountScreenState extends State<AccountScreen> {
           ],
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: 40),
-            PlaceHolderProfile(
-              titleWidget: titleRow("Barbra"),
-              imgIconWidget: circleAvatarWidget("assets/search/club.png"),
-              subTitleWidget: subTitleWidget(context),
+            Consumer<AccountProvider>(
+              builder: (context, provider, child) {
+                if (provider.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                final currentUser = provider.user;
+                final profileName = currentUser?.name ?? "User";
+
+                return PlaceHolderProfile(
+                  titleWidget: titleRow(profileName),
+                  imgIconWidget: circleAvatarWidget("assets/search/club.png"),
+                  subTitleWidget: subTitleWidget(context),
+                );
+              },
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.95,
@@ -123,14 +129,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 trailingWidget: Icon(Icons.arrow_forward_ios_rounded),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Expanded(
               child: GridView.builder(
                 itemCount: 3,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  // mainAxisSpacing: 5,
-                  childAspectRatio: 1, // Adjust for a taller box shape
+                  childAspectRatio: 1,
                   crossAxisSpacing: 1,
                 ),
                 itemBuilder: (context, index) {
@@ -139,7 +144,6 @@ class _AccountScreenState extends State<AccountScreen> {
                       Container(
                         height: 120,
                         width: 120,
-
                         alignment: Alignment.center,
                         child: Container(
                           height: 100,
@@ -148,7 +152,6 @@ class _AccountScreenState extends State<AccountScreen> {
                             borderRadius: BorderRadius.circular(15),
                             color: Colors.grey[300],
                           ),
-
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -166,7 +169,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                         ),
                                       ),
                                       TextSpan(
-                                        text: " Super Likes\n",
+                                        text: " ${accText[index]}\n",
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 10,
@@ -187,24 +190,20 @@ class _AccountScreenState extends State<AccountScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: 4,
                         right: 4,
                         child: Container(
-                          height: 24, // set the circle size explicitly
+                          height: 24,
                           width: 24,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
-
                             border: Border.all(color: Colors.grey, width: 1.0),
                           ),
-
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             constraints: BoxConstraints(),
-
                             onPressed: () {},
                             icon: Icon(
                               Icons.add,
@@ -219,6 +218,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 },
               ),
             ),
+            // SizedBox(height: 20),
+            // ===== Image Slider =====
             Consumer<ImageSliderProvider>(
               builder: (context, provider, child) {
                 final images = provider.imagesAddress;
@@ -226,17 +227,41 @@ class _AccountScreenState extends State<AccountScreen> {
 
                 return Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: AnimatedSwitcher(
-                        duration: Duration(seconds: 1),
-                        child: Container(
-                          key: ValueKey<String>(images[currentIndex]),
-                          height: 300,
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          child: Image.asset(
-                            images[currentIndex],
-                            fit: BoxFit.cover,
+                    GestureDetector(
+                      onHorizontalDragStart: (_) => provider.stopAutoSlide(),
+                      onHorizontalDragEnd: (details) {
+                        provider.startAutoSlide();
+                        if (details.primaryVelocity! < 0) {
+                          provider.nextImage();
+                        } else if (details.primaryVelocity! > 0) {
+                          provider.previousImage();
+                        }
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: AnimatedSwitcher(
+                          duration: Duration(milliseconds: 800),
+                          transitionBuilder: (child, animation) {
+                            final offsetAnimation = Tween<Offset>(
+                              begin: Offset(1, 0),
+                              end: Offset(0, 0),
+                            ).animate(animation);
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            key: ValueKey<String>(images[currentIndex]),
+                            height: 300,
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            child: Image.asset(
+                              images[currentIndex],
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -246,14 +271,17 @@ class _AccountScreenState extends State<AccountScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(images.length, (index) {
                         bool isActive = index == currentIndex;
-                        return AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
-                          width: isActive ? 10 : 7,
-                          height: isActive ? 10 : 7,
-                          margin: EdgeInsets.symmetric(horizontal: 3),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isActive ? Colors.pink : Colors.grey,
+                        return GestureDetector(
+                          onTap: () => provider.goToIndex(index),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            width: isActive ? 12 : 8,
+                            height: isActive ? 12 : 8,
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isActive ? Colors.pink : Colors.grey,
+                            ),
                           ),
                         );
                       }),
@@ -269,19 +297,17 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 }
 
+// ===== Helper Widgets =====
 class PlaceHolderProfile extends StatelessWidget {
   final String? img;
-  // final String nameText;
-  // final Widget newWidget;
   final Widget imgIconWidget;
   final Widget? trailingWidget;
   final Widget? titleWidget;
   final Widget? subTitleWidget;
+
   const PlaceHolderProfile({
     super.key,
     this.img,
-    //required this.nameText,
-    // required this.newWidget,
     required this.imgIconWidget,
     this.trailingWidget,
     this.titleWidget,
@@ -311,7 +337,6 @@ Widget titleRow(String nameText) {
         ),
       ),
       SizedBox(width: 5),
-
       Icon(Icons.verified_outlined),
     ],
   );
@@ -325,18 +350,38 @@ Widget subTitleWidget(context) {
   return Align(
     alignment: Alignment.centerLeft,
     child: Container(
-      width: MediaQuery.of(context).size.width * 0.35,
+      // width: MediaQuery.of(context).size.width * 0.35,
+      height: 30,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         color: Colors.black,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.edit_outlined, color: Colors.white),
-          Text("Edit Profile", style: TextStyle(color: Colors.white)),
-        ],
+      //padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EditprofileScreen()),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent, // remove bg
+          shadowColor: Colors.transparent, // remove shadow
+          surfaceTintColor: Colors.transparent, // remove Material tint
+          elevation: 0, // remove elevation
+          padding: EdgeInsets.zero, // <-- removes button padding
+          minimumSize: Size(0, 0), // <-- removes forced minimum size
+        ),
+        child: Row(
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // <-- align content to top
+          mainAxisSize: MainAxisSize.min, // <-- prevents expansion
+          // mainAxisSize: MainAxisSize.,
+          children: [
+            Icon(Icons.edit_outlined, color: Colors.white),
+            Text("Edit Profile", style: TextStyle(color: Colors.white)),
+          ],
+        ),
       ),
     ),
   );

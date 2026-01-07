@@ -1,38 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tinderapp/presentation/screens/auth/auth_services.dart';
+import 'package:provider/provider.dart';
 import 'package:tinderapp/presentation/screens/browsing_flow/bottomnavigation_screen.dart';
+import 'package:tinderapp/presentation/screens/onboarding/name_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/phone_screen.dart';
+import 'package:tinderapp/presentation/screens/onboarding/signin_screen.dart';
 import 'package:tinderapp/presentation/screens/onboarding/widgets/login_screen_widget.dart';
 import 'package:tinderapp/presentation/theme/app_theme.dart';
+import 'package:tinderapp/provider/name_screen_provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final AuthServices _authService = AuthServices();
-
-  /// Handle Google Sign-In
-  void _handleGoogleSignIn() async {
-    User? user = await _authService.signInWithGoogle();
-    if (user != null) {
-      print('Signed in as ${user.displayName}');
-      // Navigate to BottomNavScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => BottomNavScreen()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google Sign-In failed or canceled')),
-      );
-    }
-  }
-
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -90,43 +73,69 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTapCon: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PhoneScreen()),
+                        MaterialPageRoute(builder: (context) => NameScreen()),
                       );
                     },
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: SocialLoginButton(
-                    imageAssets: "assets/images/google.png",
-                    text: "Continue With Google",
-                    onTapCon: () {
-                      _handleGoogleSignIn();
+                  child: Consumer<NameProvider>(
+                    builder: (context, provider, child) {
+                      return provider.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : SocialLoginButton(
+                              imageAssets: "assets/images/google.png",
+                              text: "Continue With Google",
+                              onTapCon: () async {
+                                final uid = await provider.signInWithGoogle();
+                                if (uid != null && context.mounted) {
+                                  // Navigate to Home Screen
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BottomNavScreen(),
+                                    ),
+                                  );
+                                }
+                              },
+                            );
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: SocialLoginButton(
-                    imageAssets: "assets/images/facebook.png",
-                    text: "Continue With Facebook",
-                    onTapCon: () {
-                      // print("object");
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: SocialLoginButton(
-                    imageAssets: "assets/images/phone.png",
-                    text: "Continue With Phone Number",
-                    onTapCon: () {},
-                  ),
-                ),
+
+                // Padding(
+                //   padding: const EdgeInsets.all(10),
+                //   child: SocialLoginButton(
+                //     imageAssets: "assets/images/facebook.png",
+                //     text: "Continue With Facebook",
+                //     onTapCon: () {
+                //       // print("object");
+                //     },
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.all(10),
+                //   child: SocialLoginButton(
+                //     imageAssets: "assets/images/phone.png",
+                //     text: "Continue With Phone Number",
+                //     onTapCon: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(builder: (context) => PhoneScreen()),
+                //       );
+                //     },
+                //   ),
+                // ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SigninScreen()),
+                    );
+                  },
                   child: Text(
-                    "Trouble Signing in?",
+                    "Signing in?",
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,
@@ -149,14 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
 // import 'package:tinderapp/presentation/screens/onboarding/widgets/login_screen_widget.dart';
 // import 'package:tinderapp/presentation/theme/app_theme.dart';
 
-// class LoginScreen extends StatefulWidget {
-//   const LoginScreen({super.key});
+// class SignUpScreen extends StatefulWidget {
+//   const SignUpScreen({super.key});
 
 //   @override
-//   State<LoginScreen> createState() => _LoginScreenState();
+//   State<SignUpScreen> createState() => _SignUpScreenState();
 // }
 
-// class _LoginScreenState extends State<LoginScreen> {
+// class _SignUpScreenState extends State<SignUpScreen> {
 //   List<String> iconImages = [
 //     "assets/images/person.png",
 //     "assets/images/google.png",
@@ -169,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
 //     "Continue With Facebook",
 //     "Continue With Phone Number",
 //   ];
-//   List<Widget> loginButtons = [LoginScreen()];
+//   List<Widget> loginButtons = [SignUpScreen()];
 //   @override
 //   Widget build(BuildContext context) {
 //     return SafeArea(

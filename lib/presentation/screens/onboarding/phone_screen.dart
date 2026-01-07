@@ -33,13 +33,13 @@ class _PhoneScreenState extends State<PhoneScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: StepProgressBar(
-                  currentStep: 1, // <-- first page
-                  totalSteps: 5, // <-- adjust based on your flow
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(16.0),
+              //   child: StepProgressBar(
+              //    currentStep: 1, // <-- first page
+              //     // totalSteps: 5, // <-- adjust based on your flow
+              //   ),
+              // ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
 

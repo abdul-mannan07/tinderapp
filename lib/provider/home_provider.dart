@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tinderapp/presentation/screens/models/model_class.dart';
+import 'package:tinderapp/models/model_class.dart';
 
 class HomeProvider with ChangeNotifier {
   // 🔹 Use typed model list
